@@ -15,6 +15,7 @@ um processo independente.
 executar em paralelo.
 1. O programa deverá assumir um **número máximo de processos paralelos** igual a
 `4`.
+1. Todos os processos devem encerrar *antes* do fim do programa principal
 
 Soluções que não contemplem esses três requisitos não serão aceitas. Eles serão
 verificados manualmente, caso a caso.
