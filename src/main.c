@@ -15,7 +15,7 @@ int check_prime(unsigned long long int number){
     return 0;
   }
   else {
-    int d = 3;
+    unsigned long long int d = 3;
     while (d <= number / 2) {
       if (number % d == 0){
         return 0;
@@ -39,20 +39,29 @@ int main() {
   qty_primes = (int*) mmap(NULL, sizeof(int)*100, protection, visibility, 0, 0);
   if ((long int)qty_primes==-1) printf("Erro de alocacao!\n");
   (*qty_primes)=0;
+  /* Initialize the array */
+  for (size_t i = 0; i < MAX_NUMBERS; i++) {
+    numbers[i] = 0;
+  }
   /* Read the numbers */
   do {
     scanf("%llu%c", &numbers[array_current_size++], &symb);
   } while (symb != '\n');
-  /* Create the processes */
-  for (int i=0; i<N_PROCESS; i++) {
-    children[i] = fork();
-    if (children[i] == 0) {
-      (*qty_primes) += check_prime(numbers[i]);
-      exit(0);
+  /* Apply the function to the numbers */
+  for (int i = 0; i < array_current_size; i+=4) {
+    /* Create the processes */
+    for (int j=0; j<N_PROCESS; j++) {
+      if (numbers[i+j] != 0) {
+        children[j] = fork();
+        if (children[j] == 0) {
+          (*qty_primes) += check_prime(numbers[i+j]);
+          exit(0);
+        }
+      }
+      for (int j=0; j<N_PROCESS; j++) {
+        waitpid(children[j], NULL, 0);
+      }
     }
-  }
-  for (int i=0; i<N_PROCESS; i++) {
-    waitpid(children[i], NULL, 0);
   }
   printf("%d\n", *qty_primes);
   return 0;
